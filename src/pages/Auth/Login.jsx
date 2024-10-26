@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import DrImage from "../../assets/Auth-Image/25872128_eldery_treatment_05.png";
-import DrLogo from "../../assets/Pharmacy logo - Made with PosterMyWall.jpg";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { IoKeyOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie"; // Importing js-cookie
+import { toast } from "react-toastify"; // Import Toastify
 
 const Login = () => {
   const [numberEmail, setNumberEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,22 +27,33 @@ const Login = () => {
           },
         }
       );
+
       console.log("Success:", response.data);
 
       // Save the token in cookies
       Cookies.set("Token", response.data.token, { expires: 7 });
-      // Handle successful login (e.g., redirect or store user data)
+
+      // Show a success toast message
+      toast.success(response.data.message);
+
+      // Navigate based on user role
+      if (response.data.role === "doctor") {
+        navigate("/dashboard");
+      } else {
+        navigate("/some-other-route"); // Update with a valid route for other roles if needed
+      }
     } catch (error) {
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
-      // Handle login error (e.g., show error message)
+      console.error(error.response.data);
+
+      // Show an error toast message
+      toast.error(error.response.data.error);
     }
   };
 
   return (
     <div className="w-full flex flex-col md:flex-row h-full md:h-[775px] bg-doctorLight font-poppins">
+      {/* Toast Container for alerts */}
+
       {/* Left Side (Form) */}
       <div className="w-full md:w-1/2 bg-doctorLight text-doctorDark flex justify-center items-center">
         <div className="w-11/12 md:w-10/12 h-auto md:h-5/6 p-5 md:p-10 shadow-lg rounded-lg bg-white">
@@ -114,7 +126,10 @@ const Login = () => {
           <div>
             <p>
               Don't have an account{" "}
-              <Link className="text-black" to="/register">
+              <Link
+                className="underline hover:text-red-600"
+                to="/numbervarification"
+              >
                 Sign Up
               </Link>
             </p>

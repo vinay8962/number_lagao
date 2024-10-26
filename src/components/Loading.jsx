@@ -1,10 +1,8 @@
-// Loading.js
 import React from "react";
-import "./Loading.css"; // Import the CSS file
 
 const Loading = () => {
   return (
-    <div className="loading">
+    <div class="loading">
       <svg width="64px" height="48px">
         <polyline
           points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"
